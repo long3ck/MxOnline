@@ -1,0 +1,24 @@
+-- 不在C盘默认目录创建虚拟目录：
+ 1、新建目录：E:\virtualenv\Envs 
+2、新建环境变量：WORKON_HOME E:\virtualenv\Envs 
+3、打开CMD，进入Envs目录: cd E:\virtualenv\Envs 
+4、安装virtualenv：pip install virtualenv 
+5、安装virtualenvwrapper：pip install virtualenvwrapper-win 
+6、创建虚拟环境：mkvirtualenv testvir1 
+要先键环境变量，再建虚拟环境，不然会在默认目录创建
+
+-- django 1.9 debug为false时如何访问静态文件
+1、修改guest/settings.py：
+DEBUG=False
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'sign/static/').replace('\\','/')
+2、执行python manage.py collectstatic，程序会在sign下面新建一个static目录，将后台admin用到的相应静态文件迁移到这里
+3、修改guest/urls.py：
+先导入from django.conf import settings
+再在urlpatterns增加如下记录
+url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root':settings.STATIC_ROOT}),
+4、启动django
+
+python manage.py collectstatic
+python manage.py makemigrations
+python manage.py migrate
